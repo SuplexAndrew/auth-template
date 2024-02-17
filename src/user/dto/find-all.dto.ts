@@ -58,6 +58,45 @@ export class FindAllDto {
     direction: 'ASC' | 'DESC';
   };
 
+  @ApiProperty({
+    description: 'search by specific value or within a period',
+    oneOf: [
+      { type: 'number', example: 1 },
+      {
+        type: 'object ',
+        properties: {
+          lte: { type: 'number' },
+          gte: { type: 'number' },
+        },
+        examples: [{ lte: 1 }, { gte: 1 }, { lte: 1, gte: 1 }],
+      },
+    ],
+    required: false,
+  })
+  @IsOptional()
+  @ValidateBy({
+    name: 'id',
+    validator: {
+      validate: (value: unknown) => {
+        if (typeof value === 'number') {
+          return Number(value) > 0;
+        }
+
+        if (typeof value === 'object') {
+          return !Object.values(value).some(
+            (propValue) => Number(propValue) < 0,
+          );
+        }
+
+        return false;
+      },
+      defaultMessage: (validationArguments?: ValidationArguments) => {
+        return `${validationArguments?.property}: Data type mismatch`;
+      },
+    },
+  })
+  id: number;
+
   @ApiProperty({ description: 'string searchable like', required: false })
   @IsOptional()
   name: string;

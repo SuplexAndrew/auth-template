@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { compare, genSalt, hash } from 'bcryptjs';
 import { Op, UniqueConstraintError } from 'sequelize';
 import { FindAllDto } from './dto/find-all.dto';
-import { transformAttr } from 'src/utils/transformAttr';
+import { transformAttr } from '../utils/transformAttr';
 import { AuthDto } from './dto/auth.dto';
 
 const publicUserAttr = [
@@ -69,7 +69,6 @@ export class UserService {
     const { email, phone, name } = filter;
 
     const where = transformAttr(filter);
-    console.log(where);
 
     return this.userModel.findAll({
       attributes: publicUserAttr,
